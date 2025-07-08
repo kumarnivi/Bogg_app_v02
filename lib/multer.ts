@@ -1,20 +1,9 @@
+// lib/multer.ts
 import multer from 'multer';
-import path from 'path';
 
-const storage = multer.diskStorage({
-  destination: './public/uploads',
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
-  },
-});
+// Use memory storage so we can access the file buffer
+const storage = multer.memoryStorage();
 
-export const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
-      return cb(new Error('Only images are allowed'));
-    }
-    cb(null, true);
-  },
-});
+const upload = multer({ storage });
+
+export default upload;

@@ -1,42 +1,34 @@
 import { NextResponse } from 'next/server';
-import { upload } from '../../../../lib/multer';
-import connectMongo from "../../../../utiles/connectMongo";
-import contactModel from "../../../../models/enqueryModel";
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import dbConnect from '../../../../utiles/connectMongo';
+import Contact from '../../../../models/enqueryModel';
 
 export async function POST(req) {
-  await connectMongo();
+  await dbConnect();
 
-  return new Promise((resolve, reject) => {
-    upload.single('queryImage')(req, {}, async (err) => {
-      if (err) {
-        return reject(NextResponse.json({ error: err.message }, { status: 400 }));
-      }
+  try {
+    const formData = await req.formData(); // Since bodyParser is false, use this for multipart
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const message = formData.get('message');
 
-      try {
-        const formData = await req.formData();
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const message = formData.get('message');
-        const file = req.file;
-
-        const newContact = new contactModel({
-          name,
-          email,
-          message,
-          queryImage: file?.filename,
-        });
-
-        await newContact.save();
-        resolve(NextResponse.json({ success: true, message: 'Contact submitted' }));
-      } catch (error) {
-        reject(NextResponse.json({ error: 'Failed to submit contact' }, { status: 500 }));
-      }
+    const newContact = new Contact({
+      name,
+      email,
+      message,
+      queryImage: '', // Set to empty since image is removed
     });
-  });
+
+    await newContact.save();
+
+    return NextResponse.json({
+      success: true,
+      message: 'Message sent successfully!',
+    });
+  } catch (error) {
+    console.error('Contact form error:', error);
+    return NextResponse.json(
+      { error: 'Failed to submit contact' },
+      { status: 500 }
+    );
+  }
 }

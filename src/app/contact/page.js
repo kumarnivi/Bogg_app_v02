@@ -2,68 +2,95 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
-  const [messageSent, setMessageSent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessageSent('');
 
-    const formData = new FormData(e.target); // Collect all form inputs
+    const formData = new FormData(e.target);
 
     try {
       const response = await axios.post('/api/contact', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      setMessageSent(response.data?.message || 'Message sent successfully!');
-      e.target.reset(); // Reset form
+      toast.success(response.data?.message || 'Message sent successfully!');
+      e.target.reset();
     } catch (err) {
-      if (err.response) {
-        setMessageSent(err.response.data?.error || 'Something went wrong.');
-      } else {
-        setMessageSent('Failed to send. Please try again.');
-      }
+      toast.error(
+        err?.response?.data?.error || 'Something went wrong. Please try again.'
+      );
     }
 
     setLoading(false);
   };
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
-      <form className="w-full max-w-lg" onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="flex items-center mb-4">
-          <label htmlFor="name" className="w-1/4">Name:</label>
-          <input name="name" type="text" id="name" required className="border rounded px-2 py-1 w-3/4" />
-        </div>
-        <div className="flex items-center mb-4">
-          <label htmlFor="email" className="w-1/4">Email:</label>
-          <input name="email" type="email" id="email" required className="border rounded px-2 py-1 w-3/4" />
-        </div>
-        <div className="flex items-center mb-4">
-          <label htmlFor="message" className="w-1/4">Message:</label>
-          <textarea name="message" id="message" required className="border rounded px-2 py-1 w-3/4" rows="4"></textarea>
-        </div>
-        <div className="flex items-center mb-4">
-          <label htmlFor="queryImage" className="w-1/4">Image:</label>
-          <input name="queryImage" type="file" accept="image/*" className="w-3/4" />
+    <main className="max-w-2xl mx-auto px-6 py-10 ">
+      <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-800">
+        Contact Us
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+        className="space-y-6 bg-white shadow-lg rounded-2xl p-8 border"
+      >
+        <div>
+          <label htmlFor="name" className="block text-gray-700 font-medium mb-1">
+            Name
+          </label>
+          <input
+            name="name"
+            type="text"
+            id="name"
+            required
+            placeholder="John Doe"
+            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-        >
-          {loading ? 'Sending...' : 'Submit'}
-        </button>
+        <div>
+          <label htmlFor="email" className="block text-gray-700 font-medium mb-1">
+            Email
+          </label>
+          <input
+            name="email"
+            type="email"
+            id="email"
+            required
+            placeholder="john@example.com"
+            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
+        </div>
 
-        {messageSent && <p className="mt-4 text-green-600">{messageSent}</p>}
+        <div>
+          <label htmlFor="message" className="block text-gray-700 font-medium mb-1">
+            Message
+          </label>
+          <textarea
+            name="message"
+            id="message"
+            rows="5"
+            required
+            placeholder="Write your message here..."
+            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition resize-none"
+          ></textarea>
+        </div>
+
+        <div className="text-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold px-6 py-3 rounded-xl transition duration-300"
+          >
+            {loading ? 'Sending...' : 'Send Message'}
+          </button>
+        </div>
       </form>
     </main>
   );

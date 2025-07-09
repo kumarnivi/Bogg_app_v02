@@ -6,7 +6,7 @@ export async function POST(req) {
   await dbConnect();
 
   try {
-    const formData = await req.formData(); // Since bodyParser is false, use this for multipart
+    const formData = await req.formData(); 
     const name = formData.get('name');
     const email = formData.get('email');
     const message = formData.get('message');
@@ -15,7 +15,6 @@ export async function POST(req) {
       name,
       email,
       message,
-      queryImage: '', // Set to empty since image is removed
     });
 
     await newContact.save();

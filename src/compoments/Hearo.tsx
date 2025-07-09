@@ -10,17 +10,12 @@ export default function Hero() {
         <h1>Bigger than<br />architecture</h1>
         <div className={styles.explore}>
           <p>
-            <button>EXPLORE</button> Be a <strong>hero.</strong>
+            <button>EXPLORE</button> 
           </p>
         </div>
       </div>
       <div className={styles.picture}>
-        <p>
-          Picture by{' '}
-          <Link href="https://unsplash.com/@hernanlucio" target="_blank">
-            @hernanlucio
-          </Link>
-        </p>
+     
       </div>
     </div>
   );

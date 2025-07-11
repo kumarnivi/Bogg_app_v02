@@ -9,7 +9,7 @@ export async function GET(req, { params }) {
       return Response.json({ message: "Post ID is required" }, { status: 400 });
     }
 
-    const postData = await postModel.findOne({ _id: params.id });
+    const postData = await postModel.findOne({ _id: params?.id });
 
     if (!postData) {
       return Response.json({ message: "Post not found" }, { status: 404 });

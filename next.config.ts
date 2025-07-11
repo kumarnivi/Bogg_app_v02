@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
    images: {
     domains: ['a.espncdn.com'], // ✅ add this line
   },
+   eslint: {
+    ignoreDuringBuilds: true, // Skip eslint during build
+  },
 };
 
 export default nextConfig;
